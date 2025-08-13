@@ -104,4 +104,7 @@ if st.button("Run Query"):
 
 # Footer
 st.markdown("---")
-st.caption("Powered by Streamlit & MySQL – Food Wastage Analytics Dashboard")
+st.markdown(
+    "<div style='text-align: center;'>Food Wastage Analytics Dashboard</div>",
+    unsafe_allow_html=True
+)

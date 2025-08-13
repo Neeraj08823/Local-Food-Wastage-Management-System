@@ -22,8 +22,7 @@ LIMIT 1;
 
 --  Q03: Contact information of food providers in a specific city
 SELECT provider_id, name, contact, address
-FROM providers
-WHERE city LIKE '%<user_input>%';
+FROM providers;
 
 
 -- Q04: Which receivers have claimed the most food
