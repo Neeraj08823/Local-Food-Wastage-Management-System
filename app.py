@@ -25,7 +25,7 @@ query_titles = [
     "Q1 – Providers per City",
     "Q2 – Receivers per City",
     "Q3 – Top Food Provider by Quantity",
-    "Q4 – Contact Info of Providers in a City",
+    "Q4 – Contact Info of Providers by City",
     "Q5 – Receivers with Most Claims",
     "Q6 – Total Quantity of Food Available",
     "Q7 – City with Most Listings",
