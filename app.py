@@ -20,7 +20,7 @@ def load_queries():
     queries = [q.strip() for q in sql_text.split(";") if q.strip()]
     return queries
 
-# Query titles
+# Query Titles (Match exactly with file order)
 query_titles = [
     "Q1 – Providers per City",
     "Q2 – Receivers per City",
@@ -30,39 +30,78 @@ query_titles = [
     "Q6 – Total Quantity of Food Available",
     "Q7 – City with Most Listings",
     "Q8 – Listings by Food Type",
-    "Q9 – Most Claimed Food Items",
+    "Q9 – Claims per Food Item",
     "Q10 – Provider with Most Completed Claims",
-    "Q11 – Claims by Status",
-    "Q12 – Average Quantity per Claim by Receiver",
-    "Q13 – Claims by Meal Type",
+    "Q11 – Claims by Status (%)",
+    "Q12 – Avg Quantity per Claim by Receiver",
+    "Q13 – Claims per Meal Type",
     "Q14 – Providers by Total Donated Quantity",
-    "Q15 – Claims Count by City"
+    "Q15 – Claims Count by City",
+    "Q16 – Pending Claims Older than 2 Days",
+    "Q17 – Most Common Food Items & Quantities"
 ]
 
 queries = load_queries()
 
-# --- UI ---
+# ---------- Streamlit UI ----------
+st.set_page_config(page_title="Food Wastage Analytics", layout="wide")
 st.title("🍽 Local Food Wastage Management – Analytics Dashboard")
+
 selected_index = st.selectbox("Select Analysis Query", range(len(queries)), format_func=lambda i: query_titles[i])
+query = queries[selected_index]
 
-# Optional dynamic filter example
-if "City" in query_titles[selected_index]:
-    city_input = st.text_input("Enter City Name", "Bengaluru")
-    query = queries[selected_index].replace("'Bengaluru'", f"'{city_input}'")
-else:
-    query = queries[selected_index]
+# ---------- Sidebar Filters ----------
+st.sidebar.header("🔍 Filters")
+city_filter = st.sidebar.text_input("City")
+provider_filter = st.sidebar.text_input("Provider Name")
+food_type_filter = st.sidebar.text_input("Food Type")
+meal_type_filter = st.sidebar.text_input("Meal Type")
 
-# Run query
+# ---------- Apply Filters ----------
+def add_filter_condition(query, column, value):
+    if not value or column.lower() not in query.lower():
+        return query
+    if "group by" in query.lower():
+        # If already has HAVING, add AND, else start HAVING
+        if "having" in query.lower():
+            query += f" AND {column} LIKE '%{value}%'"
+        else:
+            query += f" HAVING {column} LIKE '%{value}%'"
+    else:
+        if "where" in query.lower():
+            query += f" AND {column} LIKE '%{value}%'"
+        else:
+            query += f" WHERE {column} LIKE '%{value}%'"
+    return query
+
+# Apply filters
+query = add_filter_condition(query, "city", city_filter)
+query = add_filter_condition(query, "name", provider_filter)
+query = add_filter_condition(query, "food_type", food_type_filter)
+query = add_filter_condition(query, "meal_type", meal_type_filter)
+
+
+
+# ---------- Run Query ----------
 if st.button("Run Query"):
     conn = get_connection()
-    df = pd.read_sql(query, conn)
-    conn.close()
+    try:
+        df = pd.read_sql(query, conn)
 
-    # Show table
-    st.subheader("📊 Data Table")
-    st.dataframe(df)
+        # Show provider contact info if present
+        if "contact" in df.columns:
+            st.subheader("📞 Provider Contact Information")
+            st.dataframe(df[["name", "contact", "address"]])
+            st.markdown("---")
 
-    # Optional chart
-    if df.shape[1] == 2 and pd.api.types.is_numeric_dtype(df[df.columns[1]]):
-        st.subheader("📈 Chart")
-        st.bar_chart(df.set_index(df.columns[0]))
+        st.subheader("📊 Query Output")
+        st.dataframe(df)
+
+    except Exception as e:
+        st.error(f"Error running query: {e}")
+    finally:
+        conn.close()
+
+# Footer
+st.markdown("---")
+st.caption("Powered by Streamlit & MySQL – Food Wastage Analytics Dashboard")
