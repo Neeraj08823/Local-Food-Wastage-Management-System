@@ -70,20 +70,9 @@ GROUP BY food_type
 ORDER BY count_listings DESC;
 
 
--- Q08: Most commonly listed food items and their total quantities
-SELECT 
-    food_name, 
-    COUNT(*) AS count_listings, 
-    SUM(quantity) AS total_quantity
-FROM food_listings
-GROUP BY food_name
-ORDER BY count_listings DESC;
-
-
-
 -- Claims & Distribution
 
--- Q09: Number of claims made for each food item
+-- Q08: Number of claims made for each food item
 SELECT 
     f.food_id, 
     f.food_name, 
@@ -95,7 +84,7 @@ GROUP BY f.food_id, f.food_name
 ORDER BY claims_count DESC;
 
 
--- Q10: Provider with the highest number of successful (completed) claims
+-- Q09: Provider with the highest number of successful (completed) claims
 SELECT 
     p.provider_id, 
     p.name, 
@@ -111,7 +100,7 @@ ORDER BY successful_claims DESC
 LIMIT 1;
 
 
--- Q11: Percentage distribution of claims by status
+-- Q10: Percentage distribution of claims by status
 SELECT 
     status,
     COUNT(*) AS count,
@@ -122,7 +111,7 @@ GROUP BY status;
 
 -- Analysis & Insights
 
--- Q12: Average estimated quantity of food claimed per receiver
+-- Q11: Average estimated quantity of food claimed per receiver
 -- Note: Uses food_listings.quantity at time of claim, which may double-count if multiple claims share one listing
 SELECT 
     r.receiver_id, 
@@ -138,7 +127,7 @@ GROUP BY r.receiver_id, r.name
 ORDER BY avg_quantity_per_claim DESC;
 
 
--- Q13: Number of claims per meal type
+-- Q12: Number of claims per meal type
 SELECT 
     f.meal_type, 
     COUNT(c.claim_id) AS claims_count
@@ -149,7 +138,7 @@ GROUP BY f.meal_type
 ORDER BY claims_count DESC;
 
 
--- Q14: Total quantity of food donated by each provider
+-- Q13: Total quantity of food donated by each provider
 SELECT 
     p.provider_id, 
     p.name, 
@@ -161,7 +150,7 @@ GROUP BY p.provider_id, p.name
 ORDER BY total_donated_quantity DESC;
 
 
--- Q15: Number of claims per city
+-- Q14: Number of claims per city
 SELECT 
     f.location AS city, 
     COUNT(c.claim_id) AS claims_count 
@@ -172,10 +161,19 @@ GROUP BY f.location
 ORDER BY claims_count DESC;
 
 
--- Q16: Pending claims older than 2 days
+-- Q15: Pending claims older than 2 days
 SELECT 
     * 
 FROM claims 
 WHERE status = 'Pending' 
     AND timestamp < DATE_SUB(NOW(), INTERVAL 2 DAY);
+
+-- Q16: Most commonly listed food items and their total quantities
+SELECT 
+    food_name, 
+    COUNT(*) AS count_listings, 
+    SUM(quantity) AS total_quantity
+FROM food_listings
+GROUP BY food_name
+ORDER BY count_listings DESC;
 
