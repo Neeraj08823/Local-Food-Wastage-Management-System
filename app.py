@@ -45,8 +45,8 @@ queries = load_queries()
 
 # ---------- Streamlit UI ----------
 st.set_page_config(page_title="Food Wastage Analytics", layout="wide")
-st.title("🍽 Local Food Wastage Management – Analytics Dashboard")
-
+st.title("🍽♻️ Local Food Wastage Management System")
+st.markdown("---")
 selected_index = st.selectbox("Select Analysis Query", range(len(queries)), format_func=lambda i: query_titles[i])
 query = queries[selected_index]
 
@@ -105,6 +105,7 @@ if st.button("Run Query"):
 # Footer
 st.markdown("---")
 st.markdown(
-    "<div style='text-align: center;'>Food Wastage Analytics Dashboard</div>",
+    "<div style='text-align: center;'>Food Wastage Analytics Dashboard --- by Neeraj Kumar</div>",
     unsafe_allow_html=True
 )
+
