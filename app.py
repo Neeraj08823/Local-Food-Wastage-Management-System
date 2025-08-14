@@ -3,13 +3,13 @@ import pandas as pd
 import mysql.connector
 import requests
 
-# --- MySQL connection ---
+# --- MySQL connection using secrets ---
 def get_connection():
     return mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="computer",
-        database="food_wastage_mgmt_db"
+        host=st.secrets["mysql"]["host"],
+        user=st.secrets["mysql"]["user"],
+        password=st.secrets["mysql"]["password"],
+        database=st.secrets["mysql"]["database"]
     )
 
 # --- Read SQL file from GitHub ---
@@ -56,29 +56,32 @@ provider_filter = st.sidebar.text_input("Provider Name")
 food_type_filter = st.sidebar.text_input("Food Type")
 meal_type_filter = st.sidebar.text_input("Meal Type")
 
-# ---------- Apply Filters ----------
-def add_filter_condition(query, column, value):
-    if not value or column.lower() not in query.lower():
-        return query
-    if "group by" in query.lower():
-        # If already has HAVING, add AND, else start HAVING
-        if "having" in query.lower():
-            query += f" AND {column} LIKE '%{value}%'"
-        else:
-            query += f" HAVING {column} LIKE '%{value}%'"
-    else:
-        if "where" in query.lower():
-            query += f" AND {column} LIKE '%{value}%'"
-        else:
-            query += f" WHERE {column} LIKE '%{value}%'"
-    return query
+def add_filter_condition(query, column_name, filter_value):
+    if not filter_value:
+        return query  # no filter
 
-# Apply filters
+    # Find if GROUP BY exists
+    group_pos = query.upper().find("GROUP BY")
+    if group_pos != -1:
+        before_group = query[:group_pos].strip()
+        after_group = query[group_pos:]
+        if "WHERE" in before_group.upper():
+            before_group += f" AND {column_name} LIKE '%{filter_value}%'"
+        else:
+            before_group += f" WHERE {column_name} LIKE '%{filter_value}%'"
+        return before_group + "\n" + after_group
+    else:
+        if "WHERE" in query.upper():
+            return query + f" AND {column_name} LIKE '%{filter_value}%'"
+        else:
+            return query + f" WHERE {column_name} LIKE '%{filter_value}%'"
+
+
+# Apply filters dynamically — no hardcoded food_type in SQL
 query = add_filter_condition(query, "city", city_filter)
 query = add_filter_condition(query, "name", provider_filter)
 query = add_filter_condition(query, "food_type", food_type_filter)
 query = add_filter_condition(query, "meal_type", meal_type_filter)
-
 
 
 # ---------- Run Query ----------
@@ -87,14 +90,12 @@ if st.button("Run Query"):
     try:
         df = pd.read_sql(query, conn)
 
-        # Show provider contact info if present
         if "contact" in df.columns:
             st.subheader("📞 Provider Contact Information")
             st.dataframe(df[["name", "contact", "address"]])
-            st.markdown("---")
-        else
-        st.subheader("📊 Query Output")
-        st.dataframe(df)
+        else:
+            st.subheader("📊 Query Output")
+            st.dataframe(df)
 
     except Exception as e:
         st.error(f"Error running query: {e}")
@@ -104,7 +105,6 @@ if st.button("Run Query"):
 # Footer
 st.markdown("---")
 st.markdown(
-    "<div style='text-align: center;'>Food Wastage Analytics Dashboard --- by Neeraj Kumar</div>",
+    "<div style='text-align: center;'>Food Wastage Analytics Dashboard - by Neeraj Kumar</div>",
     unsafe_allow_html=True
 )
-
