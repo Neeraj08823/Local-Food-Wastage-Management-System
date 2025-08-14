@@ -8,7 +8,7 @@ def get_connection():
     return mysql.connector.connect(
         host="localhost",
         user="root",
-        password="computer",  # change
+        password="computer",
         database="food_wastage_mgmt_db"
     )
 
@@ -37,8 +37,7 @@ query_titles = [
     "Q13 – Claims per Meal Type",
     "Q14 – Providers by Total Donated Quantity",
     "Q15 – Claims Count by City",
-    "Q16 – Pending Claims Older than 2 Days",
-    "Q17 – Most Common Food Items & Quantities"
+    "Q16 – Most Common Food Items & Quantities"
 ]
 
 queries = load_queries()
@@ -93,7 +92,7 @@ if st.button("Run Query"):
             st.subheader("📞 Provider Contact Information")
             st.dataframe(df[["name", "contact", "address"]])
             st.markdown("---")
-
+        else
         st.subheader("📊 Query Output")
         st.dataframe(df)
 
