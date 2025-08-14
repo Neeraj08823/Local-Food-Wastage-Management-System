@@ -94,7 +94,7 @@ UPDATE claims SET status = CASE
   WHEN LOWER(status) IN ('done','complete','completed') THEN 'Completed'
   WHEN LOWER(status) IN ('pending','inprogress') THEN 'Pending'
   WHEN LOWER(status) IN ('cancel','canceled','cancelled') THEN 'Cancelled'
-  ELSE UPPER(LEFT(status,1)) + LOWER(SUBSTRING(status,2))
+  ELSE CONCAT(UPPER(LEFT(status,1)), LOWER(SUBSTRING(status,2)))
 END;
 
 

@@ -160,14 +160,7 @@ GROUP BY f.location
 ORDER BY claims_count DESC;
 
 
--- Q15: Pending claims older than 2 days
-SELECT 
-    * 
-FROM claims 
-WHERE status = 'Pending' 
-    AND timestamp < DATE_SUB(NOW(), INTERVAL 2 DAY);
-
--- Q16: Most commonly listed food items and their total quantities
+-- Q15: Most commonly listed food items and their total quantities
 SELECT 
     food_name, 
     COUNT(*) AS count_listings, 
