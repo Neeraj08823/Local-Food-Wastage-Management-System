@@ -3,6 +3,11 @@ import pandas as pd
 import mysql.connector
 import requests
 
+
+# Get secrets
+db_config = st.secrets["mysql"]
+
+
 # --- MySQL connection using secrets ---
 def get_connection():
     return mysql.connector.connect(

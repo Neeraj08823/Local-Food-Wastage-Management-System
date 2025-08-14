@@ -67,7 +67,8 @@ INTO TABLE food_listings
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
-(food_id, food_name, quantity, expiry_date, provider_id, provider_type, location, food_type, meal_type);
+(food_id, food_name, quantity, @expiry_date, provider_id, provider_type, location, food_type, meal_type)
+SET expiry_date = STR_TO_DATE(@expiry_date, '%m/%d/%Y');
 
 -- Load Data for Claims table
 LOAD DATA LOCAL INFILE 'Local Food Wastage Management System/Data/claims_data.csv'
@@ -75,7 +76,8 @@ INTO TABLE claims
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
-(claim_id, food_id, receiver_id, status, timestamp);
+(claim_id, food_id, receiver_id, status, @claim_timestamp)
+SET timestamp = STR_TO_DATE(@claim_timestamp, '%m/%e/%Y %H:%i');
 -- --------------------------------------------------------------------------------------------------------------------------------
 
 
