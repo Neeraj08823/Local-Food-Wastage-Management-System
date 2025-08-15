@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS claims (
 
 
 -- Load Data for Provider table
-LOAD DATA LOCAL INFILE 'Local Food Wastage Management System/Data/providers_data.csv'
+LOAD DATA LOCAL INFILE 'C:/Users/Kr_Neeraj_Singh/Downloads/Labmentix/Local Food Wastage Management System/Data/providers_data.csv'
 INTO TABLE providers
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
@@ -54,7 +54,7 @@ IGNORE 1 ROWS
 (provider_id, name, type, address, city, contact);
 
 -- Load Data for Receivers table
-LOAD DATA LOCAL INFILE 'Local Food Wastage Management System/Data/receivers_data.csv'
+LOAD DATA LOCAL INFILE 'C:/Users/Kr_Neeraj_Singh/Downloads/Labmentix/Local Food Wastage Management System/Data/receivers_data.csv'
 INTO TABLE receivers
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
@@ -62,7 +62,7 @@ IGNORE 1 ROWS
 (receiver_id, name, type, city, contact);
 
 -- Load Data for Food Listings table
-LOAD DATA LOCAL INFILE 'Local Food Wastage Management System/Data/food_listings_data.csv'
+LOAD DATA LOCAL INFILE 'C:/Users/Kr_Neeraj_Singh/Downloads/Labmentix/Local Food Wastage Management System/Data/food_listings_data.csv'
 INTO TABLE food_listings
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
@@ -71,7 +71,7 @@ IGNORE 1 ROWS
 SET expiry_date = STR_TO_DATE(@expiry_date, '%m/%d/%Y');
 
 -- Load Data for Claims table
-LOAD DATA LOCAL INFILE 'Local Food Wastage Management System/Data/claims_data.csv'
+LOAD DATA LOCAL INFILE 'C:/Users/Kr_Neeraj_Singh/Downloads/Labmentix/Local Food Wastage Management System/Data/claims_data.csv'
 INTO TABLE claims
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
