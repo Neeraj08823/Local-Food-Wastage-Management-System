@@ -74,7 +74,7 @@ The project database contains **4 main tables**:
 - Analyze and visualize trends in **food donations, claims, and provider activity**.
 - Provide **filters** for city, provider, food type, and meal type.
 - Display **provider contact information** for easier coordination.
-- Generate **insights** from 17 pre-defined SQL queries.
+- Generate **insights** from 15 pre-defined SQL queries.
 
 ---
 
@@ -107,7 +107,7 @@ The project database contains **4 main tables**:
 | File / Folder Name    | Description                                                                        |
 | --------------------- | ---------------------------------------------------------------------------------- |
 | 📄 `app.py`           | Streamlit application to run SQL queries and display results with filters          |
-| 📄 `Analysis.sql`     | Contains 17 SQL queries for analysis of food providers, receivers, and claims      |
+| 📄 `Analysis.sql`     | Contains 15 SQL queries for analysis of food providers, receivers, and claims      |
 | 📄 `Handle Data.sql`  | SQL scripts for cleaning, updating, and validating database records                |
 | 📦 `requirements.txt` | Python dependencies required to run the project                                    |
 | 📝 `README.md`        | Project documentation                                                              |
