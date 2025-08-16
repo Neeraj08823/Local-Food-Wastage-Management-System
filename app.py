@@ -3,22 +3,45 @@ import pandas as pd
 import mysql.connector
 import requests
 
+# ---------- Page Config ----------
+st.set_page_config(page_title="Food Wastage Dashboard", layout="wide")
 
-# Get secrets
-db_config = st.secrets["mysql"]
+# ---------- Title ----------
+st.markdown(
+    "<h1 style='text-align: center; font-size: 42px;'>🍜🍛♻️ Local Food Wastage Management System</h1>",
+    unsafe_allow_html=True
+)
 
+# ---------- Custom CSS ----------
+st.markdown("""
+    <style>
+    /* Make the selectbox bigger */
+    div[data-baseweb="select"] {
+        font-size: 20px !important;
+    }
+    div[data-baseweb="select"] > div {
+        min-height: 55px;
+    }
+    /* Center column content */
+    .center-col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
-# --- MySQL connection using secrets ---
+# ---------- MySQL Connection ----------
 def get_connection():
     return mysql.connector.connect(
         host=st.secrets["mysql"]["host"],
-        port=st.secrets["mysql"]["port"],
         user=st.secrets["mysql"]["user"],
         password=st.secrets["mysql"]["password"],
         database=st.secrets["mysql"]["database"]
     )
 
-# --- Read SQL file from GitHub ---
+# ---------- Load Queries from GitHub ----------
 @st.cache_data
 def load_queries():
     url = "https://raw.githubusercontent.com/Neeraj08823/Local-Food-Wastage-Management-System/main/Analysis.sql"
@@ -26,7 +49,9 @@ def load_queries():
     queries = [q.strip() for q in sql_text.split(";") if q.strip()]
     return queries
 
-# Query Titles (Match exactly with file order)
+queries = load_queries()
+
+# ---------- Query Titles ----------
 query_titles = [
     "Q1 – Providers per City",
     "Q2 – Receivers per City",
@@ -46,27 +71,10 @@ query_titles = [
     "Q16 – Most Common Food Items & Quantities"
 ]
 
-queries = load_queries()
-
-# ---------- Streamlit UI ----------
-st.set_page_config(page_title="Food Wastage Analytics", layout="wide")
-st.title("🍽♻️ Local Food Wastage Management System")
-st.markdown("---")
-selected_index = st.selectbox("Select Analysis Query", range(len(queries)), format_func=lambda i: query_titles[i])
-query = queries[selected_index]
-
-# ---------- Sidebar Filters ----------
-st.sidebar.header("🔍 Filters")
-city_filter = st.sidebar.text_input("City")
-provider_filter = st.sidebar.text_input("Provider Name")
-food_type_filter = st.sidebar.text_input("Food Type")
-meal_type_filter = st.sidebar.text_input("Meal Type")
-
+# ---------- Filter Function ----------
 def add_filter_condition(query, column_name, filter_value):
     if not filter_value:
-        return query  # no filter
-
-    # Find if GROUP BY exists
+        return query
     group_pos = query.upper().find("GROUP BY")
     if group_pos != -1:
         before_group = query[:group_pos].strip()
@@ -82,33 +90,61 @@ def add_filter_condition(query, column_name, filter_value):
         else:
             return query + f" WHERE {column_name} LIKE '%{filter_value}%'"
 
+# ---------- Layout ----------
+col1, col2 = st.columns([1, 2])
 
-# Apply filters dynamically — no hardcoded food_type in SQL
-query = add_filter_condition(query, "city", city_filter)
-query = add_filter_condition(query, "name", provider_filter)
-query = add_filter_condition(query, "food_type", food_type_filter)
-query = add_filter_condition(query, "meal_type", meal_type_filter)
+with col1:
+    st.markdown('<div class="center-col">', unsafe_allow_html=True)
+
+    st.markdown("<h3 style='font-weight: bold; font-size: 22px;'>📊 Select Analysis Query</h3>", unsafe_allow_html=True)
+    query_choice = st.selectbox("", query_titles, label_visibility="collapsed")
+
+    # Default filters
+    city_filter, provider_filter, food_type_filter, meal_type_filter = None, None, None, None
+
+    # Apply filters conditionally
+    if query_choice == "Q3 – Top Food Provider by Quantity":
+        provider_filter = st.text_input("🏪 Provider Name")
+
+    elif query_choice == "Q4 – Contact Info of Providers by City":
+        city_filter = st.text_input("🏙 City Filter")
+        provider_filter = st.text_input("🏪 Provider Name")
+
+    elif query_choice == "Q8 – Listings by Food Type":
+        food_type_filter = st.text_input("🥗 Food Type")
+
+    elif query_choice == "Q13 – Claims per Meal Type":
+        meal_type_filter = st.text_input("🍽 Meal Type")
+
+    run_query = st.button("🚀 Execute")
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
-# ---------- Run Query ----------
-if st.button("Run Query"):
-    conn = get_connection()
-    try:
-        df = pd.read_sql(query, conn)
+with col2:
+    if run_query:
+        query_index = query_titles.index(query_choice)
+        query = queries[query_index]
 
-        if "contact" in df.columns:
-            st.subheader("📞 Provider Contact Information")
-            st.dataframe(df[["name", "contact", "address"]])
-        else:
-            st.subheader("📊 Query Output")
-            st.dataframe(df)
+        # Apply filters
+        query = add_filter_condition(query, "city", city_filter)
+        query = add_filter_condition(query, "name", provider_filter)
+        query = add_filter_condition(query, "food_type", food_type_filter)
+        query = add_filter_condition(query, "meal_type", meal_type_filter)
 
-    except Exception as e:
-        st.error(f"Error running query: {e}")
-    finally:
-        conn.close()
+        st.subheader("📝 SQL Query")
+        st.code(query, language="sql")
 
-# Footer
+        try:
+            conn = get_connection()
+            df = pd.read_sql(query, conn)
+            conn.close()
+            st.subheader("📊 Query Result")
+            st.dataframe(df, use_container_width=True)
+        except Exception as e:
+            st.error(f"Error running query: {e}")
+
+# ---------- Footer ----------
 st.markdown("---")
 st.markdown(
     "<div style='text-align: center;'>Food Wastage Analytics Dashboard - by Neeraj Kumar</div>",

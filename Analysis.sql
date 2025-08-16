@@ -5,13 +5,13 @@ SELECT city, COUNT(*) AS providers_count
 FROM providers
 GROUP BY city;
 
---  Q01: Receivers per city
+--  Q02: Receivers per city
 SELECT city, COUNT(*) AS receivers_count
 FROM receivers
 GROUP BY city;
 
 
---  Q02: Top food provider (by total quantity)
+--  Q03: Top food provider (by total quantity)
 SELECT p.type AS provider_type, SUM(f.quantity) AS total_quantity
 FROM providers p
 JOIN food_listings f ON p.provider_id = f.provider_id
@@ -20,12 +20,12 @@ ORDER BY total_quantity DESC
 LIMIT 1;
 
 
---  Q03: Contact information of food providers in a specific city
+--  Q04: Contact information of food providers in a specific city
 SELECT provider_id, name, contact, address
 FROM providers;
 
 
--- Q04: Which receivers have claimed the most food
+-- Q05: Which receivers have claimed the most food
 SELECT 
     r.receiver_id, 
     r.name, 
@@ -42,13 +42,13 @@ LIMIT 5;
 
 -- Food Listings & Availability
 
--- Q05: Total quantity of food available from all providers
+-- Q06: Total quantity of food available from all providers
 SELECT 
     SUM(quantity) AS total_available_quantity
 FROM food_listings;
 
 
--- Q06: City with the highest number of food listings
+-- Q07: City with the highest number of food listings
 SELECT 
     location AS city, 
     COUNT(*) AS listings_count
@@ -58,7 +58,7 @@ ORDER BY listings_count DESC
 LIMIT 1;
 
 
--- Q07: Most commonly available food types and their total quantities and %
+-- Q08: Most commonly available food types and their total quantities and %
 SELECT 
     food_type, 
     COUNT(*) AS count_listings, 
@@ -71,7 +71,7 @@ ORDER BY count_listings DESC;
 
 -- Claims & Distribution
 
--- Q08: Number of claims made for each food item
+-- Q09: Number of claims made for each food item
 SELECT 
     f.food_id, 
     f.food_name, 
@@ -83,7 +83,7 @@ GROUP BY f.food_id, f.food_name
 ORDER BY claims_count DESC;
 
 
--- Q09: Provider with the highest number of successful (completed) claims
+-- Q10: Provider with the highest number of successful (completed) claims
 SELECT 
     p.provider_id, 
     p.name, 
@@ -99,7 +99,7 @@ ORDER BY successful_claims DESC
 LIMIT 1;
 
 
--- Q10: Percentage distribution of claims by status
+-- Q11: Percentage distribution of claims by status
 SELECT 
     status,
     COUNT(*) AS count,
@@ -110,7 +110,7 @@ GROUP BY status;
 
 -- Analysis & Insights
 
--- Q11: Average estimated quantity of food claimed per receiver
+-- Q12: Average estimated quantity of food claimed per receiver
 -- Note: Uses food_listings.quantity at time of claim, which may double-count if multiple claims share one listing
 SELECT 
     r.receiver_id, 
@@ -126,7 +126,7 @@ GROUP BY r.receiver_id, r.name
 ORDER BY avg_quantity_per_claim DESC;
 
 
--- Q12: Number of claims per meal type
+-- Q13: Number of claims per meal type
 SELECT 
     f.meal_type, 
     COUNT(c.claim_id) AS claims_count
@@ -137,7 +137,7 @@ GROUP BY f.meal_type
 ORDER BY claims_count DESC;
 
 
--- Q13: Total quantity of food donated by each provider
+-- Q14: Total quantity of food donated by each provider
 SELECT 
     p.provider_id, 
     p.name, 
@@ -149,7 +149,7 @@ GROUP BY p.provider_id, p.name
 ORDER BY total_donated_quantity DESC;
 
 
--- Q14: Number of claims per city
+-- Q15: Number of claims per city
 SELECT 
     f.location AS city, 
     COUNT(c.claim_id) AS claims_count 
@@ -160,7 +160,7 @@ GROUP BY f.location
 ORDER BY claims_count DESC;
 
 
--- Q15: Most commonly listed food items and their total quantities
+-- Q16: Most commonly listed food items and their total quantities
 SELECT 
     food_name, 
     COUNT(*) AS count_listings, 
@@ -168,4 +168,3 @@ SELECT
 FROM food_listings
 GROUP BY food_name
 ORDER BY count_listings DESC;
-
