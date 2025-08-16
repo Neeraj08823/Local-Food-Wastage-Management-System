@@ -32,10 +32,15 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# ---------- MySQL Connection ----------
+# Get secrets
+db_config = st.secrets["mysql"]
+
+
+# --- MySQL connection using secrets ---
 def get_connection():
     return mysql.connector.connect(
         host=st.secrets["mysql"]["host"],
+        port=st.secrets["mysql"]["port"],
         user=st.secrets["mysql"]["user"],
         password=st.secrets["mysql"]["password"],
         database=st.secrets["mysql"]["database"]
