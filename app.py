@@ -122,6 +122,9 @@ with col1:
         meal_type_filter = st.text_input("🍽 Meal Type")
 
     run_query = st.button("🚀 Execute")
+   # Confirmation box after execution
+    if run_query:
+        st.success("✅ Query Executed Successfully!")
 
     st.markdown('</div>', unsafe_allow_html=True)
 
