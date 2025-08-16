@@ -1,5 +1,3 @@
--- Food Providers & Receivers
-
 --  Q01: Providers per city
 SELECT city, COUNT(*) AS providers_count
 FROM providers
@@ -40,7 +38,6 @@ GROUP BY r.receiver_id, r.name
 ORDER BY claims_count DESC
 LIMIT 5;
 
--- Food Listings & Availability
 
 -- Q06: Total quantity of food available from all providers
 SELECT 
@@ -68,8 +65,6 @@ FROM food_listings
 GROUP BY food_type
 ORDER BY count_listings DESC;
 
-
--- Claims & Distribution
 
 -- Q09: Number of claims made for each food item
 SELECT 
@@ -107,8 +102,6 @@ SELECT
 FROM claims
 GROUP BY status;
 
-
--- Analysis & Insights
 
 -- Q12: Average estimated quantity of food claimed per receiver
 -- Note: Uses food_listings.quantity at time of claim, which may double-count if multiple claims share one listing

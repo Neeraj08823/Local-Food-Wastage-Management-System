@@ -139,7 +139,7 @@ with col2:
             conn = get_connection()
             df = pd.read_sql(query, conn)
             conn.close()
-            st.subheader("📊 Query Result")
+            st.subheader("📊 Result")
             st.dataframe(df, use_container_width=True)
         except Exception as e:
             st.error(f"Error running query: {e}")
