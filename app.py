@@ -4,13 +4,16 @@ import mysql.connector
 import requests
 
 # ---------- Page Config ----------
-st.set_page_config(page_title="Food Wastage Dashboard", layout="wide")
+st.set_page_config(page_title="Food Wastage Dashboard", layout="wide",page_icon="♻️")
 
 # ---------- Title ----------
 st.markdown(
-    "<h1 style='text-align: center; font-size: 42px;'>🍜🍛♻️ Local Food Wastage Management System</h1>",
+    "<h1 style='text-align: center; font-family: Georgia, serif; color: #FF4B4B; font-size: 42px;'>🍜🍛♻️ Local Food Wastage Management System</h1>",
     unsafe_allow_html=True
 )
+st.markdown(""" <div style="border: 2px solid #7d3b3b;
+             margin-bottom: 15px;">
+    </div>""", unsafe_allow_html=True)
 
 # ---------- Custom CSS ----------
 st.markdown("""
@@ -21,6 +24,8 @@ st.markdown("""
     }
     div[data-baseweb="select"] > div {
         min-height: 55px;
+        /*color:#FFD700  !important;*/
+        color:#decd16  !important;
     }
     /* Center column content */
     .center-col {
@@ -31,7 +36,6 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
-
 # Get secrets
 db_config = st.secrets["mysql"]
 
@@ -101,7 +105,7 @@ col1, col2 = st.columns([1, 2])
 with col1:
     st.markdown('<div class="center-col">', unsafe_allow_html=True)
 
-    st.markdown("<h3 style='font-weight: bold; font-size: 22px;'>📊 Select Analysis Query</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='font-weight: bold; font-size: 24px;'>🧩 Select Analysis Query</h3>", unsafe_allow_html=True)
     query_choice = st.selectbox("", query_titles, label_visibility="collapsed")
 
     # Default filters
@@ -147,14 +151,20 @@ with col2:
             conn = get_connection()
             df = pd.read_sql(query, conn)
             conn.close()
-            st.subheader("📊 Result")
+            st.subheader("📊 Results")
             st.dataframe(df, use_container_width=True)
         except Exception as e:
             st.error(f"Error running query: {e}")
 
 # ---------- Footer ----------
-st.markdown("---")
+st.markdown("---", unsafe_allow_html=True)
 st.markdown(
-    "<div style='text-align: center;'>Food Wastage Analytics Dashboard - by Neeraj Kumar</div>",
+    """
+    <div style="text-align: center; padding: 12px; font-size: 14px; color: #aaa;">
+        Build using <a href="https://streamlit.io/" target="_blank" style="color:#FF4B4B; text-decoration: none;">Streamlit</a> & MySQL<br>
+        © 2025 Neeraj Kumar | 
+        <a href="https://github.com/Neeraj08823/Local-Food-Wastage-Management-System" target="_blank" style="color:#FF4B4B; text-decoration: none;">GitHub Repo</a>
+    </div>
+    """,
     unsafe_allow_html=True
 )
