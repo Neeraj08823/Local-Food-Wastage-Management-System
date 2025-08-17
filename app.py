@@ -12,7 +12,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 st.markdown(""" <div style="border: 2px solid #7d3b3b;
-             margin-bottom: 15px;">
+            margin-bottom: 15px;">
     </div>""", unsafe_allow_html=True)
 
 # ---------- Custom CSS ----------
